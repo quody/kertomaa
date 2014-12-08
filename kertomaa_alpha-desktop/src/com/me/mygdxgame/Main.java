@@ -8,8 +8,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "kertomaa_alpha";
 		cfg.useGL20 = false;
-		cfg.width = 1920;
-		cfg.height = 1080;
+		cfg.width = 1200;
+		cfg.height = 800;
 		
 		new LwjglApplication(new MyGdxGame(), cfg);
 	}

@@ -18,12 +18,17 @@ public class gamelogic {
 	//Data structures
 	private int[] products;
 	private int[] answers=new int[3];
+	//Dictionary, jossa kaikkien ammusten kappalem‰‰r‰t (jos niiden k‰yttˆ‰ halutaan rajottaa, esim. kolme kpl ammusta x).
 	private Dictionary<Ammo,Integer> ammo = new Hashtable<Ammo, Integer>();
+	//Kaikki peliss‰ olevat piirrett‰v‰t asiat (ei ammukset)
     private List<Object> elements = new LinkedList<Object>();
+    //Kaikki peliss‰ olevat ammukset
     private List<Bullet> projectiles = new LinkedList<Bullet>();
+    //Fysiikkamallinnus on metreiss‰ - t‰n vakion avulla skaalataan kaikki sen et‰isyydet pikseleiks.
     private float pxtom;
 	//Constructor
 	public gamelogic(int diff, World world1) {
+		//World on box2d:n "maailma", johon kaikki objektit sijotetaan.
 		world=world1;
 		points = 0;
 		difficulty = diff;
@@ -31,7 +36,9 @@ public class gamelogic {
 		//Create weapons
 		this.set_weapon(Ammo.ORANGE);
 		ammo.put(Ammo.ORANGE,100);
+		//T‰‰ alottaa pelin
 		this.next_question();
+		//T‰‰ lis‰‰ maan
 		this.add_ground();
 		//this.add_player();
 		//this.add_wall();
@@ -83,8 +90,8 @@ public class gamelogic {
 		Body groundBody = world.createBody(groundBodyDef);
 		// Create a polygon shape
 		PolygonShape groundBox = new PolygonShape();  
-		// Set the polygon shape as a box which is twice the size of our view port and 20 high
-		// (setAsBox takes half-width and half-height as arguments)
+		// T‰ss‰ oon ensin paintissa piirt‰ny sen muotosen polygonin mit‰ haluun. Sitten oon laskenu siit‰ vektorit, eli t‰ss‰ teh‰‰n vaan joku 8-kulmio.
+		//Huom!! Box2d:ss‰ polygoneissa ei voi olla "kuoppia" (vaan pit‰‰ olla ns. convex hull ks google) kuopalliset objektit tehd‰‰n yhdist‰m‰ll‰ polygoneja (kuten kilpparissa).
 		//groundBox.setAsBox(2000f, 1.0f);
 		Vector2[] vertices = {new Vector2(-58*pxtom,-62*pxtom), new Vector2(-71*pxtom,-30*pxtom), 
 				new Vector2(-46*pxtom,27*pxtom), new Vector2(1*pxtom,93*pxtom), 
@@ -98,8 +105,6 @@ public class gamelogic {
 		groundBox.dispose();
 		elements.add(wall);
 		//wall.setBody(groundBody);
-		
-		//Create sensor to same body! imba!!! not worker =(
 		groundBodyDef= new BodyDef();
 		//groundBodyDef.type = BodyDef.BodyType.DynamicBody;
 		groundBodyDef.position.set(new Vector2(4f,2.2f));
@@ -107,9 +112,7 @@ public class gamelogic {
 		groundBody = world.createBody(groundBodyDef);
 		// Create a polygon shape
 		groundBox = new PolygonShape();  
-		// Set the polygon shape as a box which is twice the size of our view port and 20 high
-		// (setAsBox takes half-width and half-height as arguments)
-		//groundBox.setAsBox(2000f, 1.0f);
+		// T‰ss‰ teh‰‰n joku h‰m‰r‰ muoto.
 		Vector2[] vertices2 = {new Vector2(-58*pxtom,-62*pxtom), 
 				new Vector2(69*pxtom,3*pxtom),
 				new Vector2(77*pxtom, -67*pxtom)};
@@ -123,14 +126,13 @@ public class gamelogic {
 		groundBox.dispose();
 		(groundBody.getFixtureList()).get(0).setUserData(wall);
 		wall.setBody(groundBody);
-		//Set sensor!? or no
-		
 	}
 	
 	public List<Object> get_elements() {
 		return elements;
 	}
 	
+	//T‰ll‰ lis‰t‰‰n peliin objekteja
 	public void add_element(Object enemy, int shape) {
 		BodyDef enemyBodyDef= new BodyDef();
 		//it's static!
@@ -147,6 +149,7 @@ public class gamelogic {
 	
 	}
 	
+	//Ok eli t‰‰ menee samalla tavalla ku sein‰n lis‰‰minen.
 	public void add_enemy(Object enemy, int shape) {
 		BodyDef enemyBodyDef= new BodyDef();
 		enemyBodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -163,7 +166,9 @@ public class gamelogic {
 			enemyBody.createFixture(groundBox, 1.0f); 
 			groundBox.dispose();
 		}
+		//Asetetaan nopeus
 		enemyBody.setLinearVelocity(-1.0f,0.0f);
+		//Lis‰t‰‰n elementteihin, jotta vihu renderˆid‰‰n.
 		elements.add(enemy);
 		(enemyBody.getFixtureList()).get(0).setUserData(enemy);
 		(enemyBody.getFixtureList()).get(1).setUserData(enemy);
@@ -191,7 +196,7 @@ public class gamelogic {
 		body.setLinearVelocity(projectile.get_speed());
 		body.setAngularVelocity((float) ((Math.random()-0.5)*20));
 
-		// Create a circle shape and set its radius to 6
+		// Create a circle shape and set its radius to 0.3f
 		CircleShape circle = new CircleShape();
 		circle.setRadius(0.3f);
 
@@ -211,9 +216,10 @@ public class gamelogic {
 		// BodyDef and FixtureDef don't need disposing, but shapes do.
 		circle.dispose();
 		projectile.setBody(body);
-		//ball created
 	}
 	
+	
+	//n‰‰ on aika itsest‰‰nselvi‰ (?)
 	public void remove_projectile(Bullet projectile) {
 		projectiles.remove(projectile);
 	}
@@ -230,16 +236,17 @@ public class gamelogic {
 		elements.remove(element);
 	}
 	
-	//move ali
 	
 	//THESE MOVES WOULD be ultimately combined to be a "render" and from there their position
-	//would simply be copied from the box2d
+	
+	//Liikuttaa vihuja
 	public void move_enemies() {
 		for (Object element : elements) {
 			element.move();
 		}
 	}
 	
+	//Liikuttaa ammuksia. T‰ss‰ aloin jo kikkailemaan omaa tˆrm‰ystarkistusta kunnes siirryin box2d - en oo varma k‰ytet‰‰nkˆ t‰t‰ en‰‰ ees.
 	public void move_projectiles() {
 		step();
 		for (Object projectile : projectiles) {
@@ -281,7 +288,7 @@ public class gamelogic {
 		pxtom=dik;
 	}
 	
-	//ShuffleArray mb this isnt the place for this...
+	//ShuffleArray. T‰n avulla vastauksen sekotetaan.
 	 static void shuffleArray(int[] ar)
 	 {
 	   Random rnd = new Random();
@@ -295,6 +302,7 @@ public class gamelogic {
 	   }
 	 }
 	
+	//T‰ss‰ generoidaan vastaukset. Lopulta vois olla enemm‰n tapoja.
 	public void generate_answers(int n1, int n2) {
 		int n_methods = 1;
 		Random rand= new Random();
@@ -338,6 +346,7 @@ public class gamelogic {
 		weapon=type;
 	}
 	
+	//T‰‰ siirt‰‰ maailmaa eeenp‰in 1/45f sekunnin verran.
 	public void step() {
 		world.step(1/45f, 6, 2);
 	}

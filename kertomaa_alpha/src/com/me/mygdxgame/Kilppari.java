@@ -7,7 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
+//Kilpparin luokka.
 public class Kilppari extends Object {
+	//tähän tulee animaatio
 	private Animation animation;
 	private float time=0;
 	

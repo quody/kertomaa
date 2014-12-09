@@ -3,6 +3,7 @@ package com.me.mygdxgame;
 import java.util.*;
 import  com.badlogic.gdx.physics.box2d.World;
 
+//Ajastin panoksille. Pointti olis, että vois tehä räjähtäviä panoksia jne.
 public class ProjectileTimer extends TimerTask {
 	public void main(gamelogic game, Object remove) {
 	      // creating timer task, timer

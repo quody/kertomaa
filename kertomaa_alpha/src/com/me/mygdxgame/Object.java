@@ -7,13 +7,17 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import java.lang.Math.*;
 
+//Kaikkien piirrett‰vien asioiden yl‰luokka. Nimi aika h‰m‰r‰ overridee jonku perus objektiluokan. 
 public class Object {
+	//N‰‰ on kaikki aika helppo ymm‰rt‰‰
 	protected int hp;
 	protected float x;
 	protected float y;
 	protected float speed;
 	protected Sprite sprite;
+	//Box2dss‰ body tarkottaa "bodya", joka fysiikkamallinnuksessa on objektin massa (eli k‰yt‰nnˆss‰ joku monikulmio - tai yhdistettyj‰ monikulmioita)
 	protected Body body;
+	//Koska fysiikkamallinnus tehd‰‰n metreiss‰ on olemassa pikseli/metri -ratio.
 	protected float pxtom;
 	protected float o_x;
 	protected float o_y;
@@ -30,6 +34,7 @@ public class Object {
 		type = "none";
 	}
 	
+	//T‰t‰ kutsutaan renderˆintiloopista ja objekti p‰ivittyy
 	public void update(float pxtom) {
 		Vector2 pos=body.getPosition();
 		float rotation = body.getAngle();
@@ -45,16 +50,21 @@ public class Object {
 	}
 	
 	
+	//Piirret‰‰n objekti
 	public void draw(SpriteBatch batch) {
 		sprite.draw(batch);
 	}
 	
+	//Setteri ett‰ pxtom voi olla protected
 	public void setPxtom(float value) {
 		pxtom=value;
 	}
+	
+	//setteri taas.
 	public void setBody(Body body1) {
 		body=body1;
 	}
+	
 	
 	public Body getBody() {
 		return body;
@@ -64,6 +74,7 @@ public class Object {
 		type=type1;
 	}
 	
+	//T‰ll‰ saadaan tiet‰‰ mink‰ tyyppinen objekti kyseess‰ (esim. pelaaja tai kilpikonna)
 	public String getType() {
 		return type;
 	}

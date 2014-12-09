@@ -55,7 +55,7 @@ public class MyGdxGame implements ApplicationListener {
     
     @Override
     public void create() {   
-    	//DEBUGGING??
+    	//Jos haluaa mennä debug modeen, missä näät fysiikkamallinnuksen ilman spritejä, laita debug=true
     	debug=false;
     	debugRenderer= new Box2DDebugRenderer();
     	
@@ -265,6 +265,8 @@ public class MyGdxGame implements ApplicationListener {
     	  
     	        	//System.out.printf("%d %d\n", Gdx.input.getX(),  Gdx.input.getY());
     	        }
+    	        
+    	        //Iso kasa iffejä, joiden avulla määritellään alueet, joista painammalla vastaukset rekisteröityy. Ei kovin elegantti.
     			if(pressed && !(Gdx.input.isButtonPressed(Input.Buttons.LEFT))) {
     	    		int x=Gdx.input.getX();
     	    		int y=Gdx.input.getY();
@@ -324,13 +326,12 @@ public class MyGdxGame implements ApplicationListener {
 	    				game.add_projectile(newshit);
     	    		}
     			}
-    			//nigga want to destroy some stuff
     		}
         batch.end();
     	}
     }
     
-
+    //Contact filterin avulla voidaan kahden objektin törmäystä manuaalisesti säädellä. (eli päättää törmääkö se vai ei). Jotta ammukset pomppais vaan kerran tää on oleellista.
     private void createContactFilter() {
     	world.setContactFilter(new ContactFilter() {
 
@@ -351,6 +352,7 @@ public class MyGdxGame implements ApplicationListener {
          });
     }
     
+    //Collision listenerin avulla voidaan tehdä "one time"-eventtejä, kun kaksi juttua törmää. Alla ensinnäkin kilppari pysähtyy muuriin ja ammusten collision flag muuttuu falseksi, jos osuu kilppariin.
     private void createCollisionListener() {
         world.setContactListener(new ContactListener() {
         	
